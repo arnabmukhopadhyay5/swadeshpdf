@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwadeshPDF — Complete Client-Side PDF Suite</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Client-Side Libraries -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib-encrypt@1.0.2/dist/pdf-lib-encrypt.min.js"></script>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand" id="homeLogoBtn">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M9 15h6"></path>
+            <path d="M12 12v6"></path>
+          </svg>
+        </div>
+        <span class="brand-text">Swadesh<span class="brand-accent">PDF</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <button type="button" class="nav-link-btn active" data-nav="home">All Tools</button>
+        <button type="button" class="nav-link-btn" data-tool="merge">Merge</button>
+        <button type="button" class="nav-link-btn" data-tool="split">Split</button>
+        <button type="button" class="nav-link-btn" data-tool="compress">Compress</button>
+        <button type="button" class="nav-link-btn" data-tool="pdf2word">PDF to Word</button>
+        <button type="button" class="nav-link-btn" data-tool="jpg2pdf">JPG to PDF</button>
+      </nav>
+
+      <div class="nav-badge">
+        <span class="dot"></span> 100% Private & Local
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-wrapper">
+    <!-- HOME DASHBOARD: ALL 11 TOOLS GRID -->
+    <section id="homeSection" class="home-section">
+      <div class="container">
+        <div class="home-hero">
+          <h1>Every tool you need to work with PDFs in one place</h1>
+          <p>Every tool you need to use PDFs, at your fingertips. All are 100% FREE, private, and run directly inside your browser.</p>
+        </div>
+
+        <div class="tools-grid" id="toolsGrid">
+          <!-- Cards populated dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- UPLOAD / DROPZONE VIEW FOR SELECTED TOOL -->
+    <section id="uploadSection" class="hero-section hidden">
+      <div class="container hero-container">
+        <div class="breadcrumb">
+          <button type="button" id="backToHomeFromUpload" class="btn-back">← All PDF Tools</button>
+        </div>
+        <div class="tool-header-badge" id="toolIconBadge"></div>
+        <h1 id="toolTitle">Merge PDF files</h1>
+        <p class="subtitle" id="toolDesc">Combine PDFs in the order you want with the easiest PDF merger available.</p>
+
+        <div id="dropZone" class="drop-zone">
+          <input type="file" id="fileInput" hidden />
+          <button type="button" id="selectFilesBtn" class="btn-primary btn-xl">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span id="selectBtnLabel">Select PDF files</span>
+          </button>
+          <p class="drop-hint" id="dropHintLabel">or drop files anywhere here</p>
+        </div>
+
+        <div class="sample-bar">
+          <span>Want to test instantly?</span>
+          <button type="button" id="loadSampleBtn" class="btn-link">Load Sample File(s)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE VIEW -->
+    <section id="workspaceSection" class="workspace-section hidden">
+      <div class="workspace-layout">
+        <!-- Left Canvas -->
+        <div class="workspace-canvas" id="workspaceDropArea">
+          <div class="canvas-toolbar">
+            <div class="toolbar-left">
+              <button type="button" id="backToHomeFromWork" class="btn-ghost">← Tools</button>
+              <span class="file-counter" id="workspaceSummaryLabel">0 items</span>
+            </div>
+            <div class="sort-controls" id="toolbarActions">
+              <!-- Dynamic action buttons -->
+            </div>
+          </div>
+
+          <div id="workspaceGrid" class="file-grid">
+            <!-- Dynamic File or Page Cards -->
+          </div>
+
+          <!-- Floating Add More Button (for multi-file tools) -->
+          <button type="button" id="addMoreBtn" class="fab-add hidden" title="Add more files">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span class="fab-badge" id="fabCountBadge">0</span>
+          </button>
+        </div>
+
+        <!-- Right Sidebar: Tool Specific Settings -->
+        <aside class="workspace-sidebar">
+          <div class="sidebar-header">
+            <h2 id="sidebarToolTitle">Tool Options</h2>
+          </div>
+
+          <div class="sidebar-body" id="sidebarOptions">
+            <!-- Dynamic Tool Controls Injected Here -->
+          </div>
+
+          <div class="sidebar-footer">
+            <button type="button" id="processBtn" class="btn-primary btn-merge">
+              <span id="processBtnText">Process PDF</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 16 16 12 12 8"></polyline>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- DOWNLOAD / SUCCESS VIEW -->
+    <section id="downloadSection" class="download-section hidden">
+      <div class="container download-card">
+        <div class="success-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 id="downloadHeading">Your file is ready!</h2>
+        <p id="downloadSummary" class="subtitle">Processing completed locally in your browser.</p>
+
+        <div class="download-actions">
+          <button type="button" id="downloadAgainBtn" class="btn-primary btn-xl">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span id="downloadBtnLabel">Download File</span>
+          </button>
+        </div>
+
+        <div class="secondary-actions">
+          <button type="button" id="backToEditBtn" class="btn-ghost">← Back to workspace</button>
+          <button type="button" id="allToolsBtn" class="btn-ghost">Explore other tools</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p id="loadingText">Processing your document...</p>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
